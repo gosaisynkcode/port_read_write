@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Android Easy Serial Port</string>
+    <string name="tips">If there is no output, or if “0e” is output, try:\nadb shell\nsu\nsetenforce 0\nchmod 0766 /dev/ttyS*</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="send">Send</string>
+    <string name="chmod">chmod -R 0777 /dev/ttyS*</string>
+    <string name="send_byte">Send 1 Byte</string>
+    <string name="clear">Clear OUTPUT</string>
+    <string name="label">\tPort:</string>
+    <string name="links">https://github.com/lalakii/android_easy_serial_port</string>
+</resources>
