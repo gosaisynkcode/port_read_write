@@ -171,8 +171,6 @@ class MainActivity2 : Activity() {
     }
 
     private val mFormat = SimpleDateFormat("HH:mm:ss\r\n")
-
-
     override fun onDestroy() {
         super.onDestroy()
         serialPort?.close()
