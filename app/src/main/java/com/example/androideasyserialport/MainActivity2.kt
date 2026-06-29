@@ -164,7 +164,7 @@ class MainActivity2 : Activity() {
         }
         url.setOnClickListener {
             val url = url.text.toString()
-            Log.e("url",url)
+            Log.e("url", url)
             val intent = Intent.getIntentOld(url).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
