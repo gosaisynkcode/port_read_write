@@ -1,9 +1,9 @@
 package com.example.androideasyserialport
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -33,6 +33,7 @@ class MainActivity2 : Activity() {
     lateinit var open: Button
     lateinit var close: Button
     lateinit var clear: Button
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -70,6 +71,7 @@ class MainActivity2 : Activity() {
                         rts = false,
                         dtr = false,
                         callback = object : SerialPort.DataCallback {
+                            @SuppressLint("SetTextI18n")
                             override fun onData(data: ByteArray) {
                                 val hexStr = HashCode.fromBytes(data).toString()
                                 runOnUiThread {
@@ -170,6 +172,7 @@ class MainActivity2 : Activity() {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     private val mFormat = SimpleDateFormat("HH:mm:ss\r\n")
     override fun onDestroy() {
         super.onDestroy()
