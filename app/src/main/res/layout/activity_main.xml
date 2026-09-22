@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -8,120 +7,77 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
-        android:orientation="horizontal">
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/scrollView"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <TextView
-                android:id="@+id/output"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="9sp" />
-        </androidx.core.widget.NestedScrollView>
-
+        android:orientation="vertical"
+        android:padding="@dimen/_10sdp">
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <EditText
-                android:id="@+id/input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="50dp"
-                android:autofillHints=""
-                android:inputType="text"
-                android:minHeight="48dp"
-                tools:ignore="NoSpeakableTextPresentCheck,LabelFor,VisualLintTextFieldSize" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <Button
-                android:id="@+id/send"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="-50dp"
-                android:text="@string/send"
-                tools:ignore="VisualLintButtonSize" />
-
-            <Button
-                android:id="@+id/send_byte"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/send_byte"
-                tools:ignore="VisualLintButtonSize" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/tips"
-                android:textColor="@android:color/holo_red_light"
-                android:textSize="24sp" />
-
-            <Button
-                android:id="@+id/su_chmod"
+                android:id="@+id/bt_permison"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/chmod"
-                android:textAllCaps="false" />
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:text="Allow"
+                android:textSize="@dimen/_10sdp"
+                android:textStyle="bold" />
+            <Button
+                android:id="@+id/btnEnable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:text="Enable"
+                android:textSize="@dimen/_10sdp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/url"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="bottom"
-                android:text="@string/links"
-                android:textColor="@android:color/holo_blue_light"
-                android:textIsSelectable="true"
-                android:textSize="16sp" />
+
+
+            <Button
+                android:id="@+id/btnDisable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Disable"
+                android:textSize="@dimen/_10sdp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnnext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Next"
+                android:textSize="@dimen/_10sdp"
+                android:textStyle="bold" />
         </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/label"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="Status Logs:"
+            android:textSize="@dimen/_8sdp"
             android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/serialPorts"
-            style="?android:attr/spinnerItemStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:ellipsize="marquee"
-            android:gravity="center_vertical"
-            android:singleLine="true" />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_weight="1"
+            android:background="#F0F0F0"
+            android:padding="@dimen/_4sdp">
 
-        <Button
-            android:id="@+id/open"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/open" />
+            <TextView
+                android:id="@+id/tvLogs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:text="Initializing..."
+                android:textSize="@dimen/_10sdp" />
+        </ScrollView>
 
-        <Button
-            android:id="@+id/close"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/close"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/clear"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/clear" />
     </LinearLayout>
+
 
 </RelativeLayout>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+    <Button
+        android:id="@+id/bt_allow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Allow"
+        tools:ignore="MissingConstraints">
+
+    </Button>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:layout_weight="1"
+        android:background="#F0F0F0"
+        android:padding="@dimen/_4sdp">
+
+        <TextView
+            android:id="@+id/tvLogs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:text="Initializing..."
+            android:textSize="@dimen/_10sdp" />
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
