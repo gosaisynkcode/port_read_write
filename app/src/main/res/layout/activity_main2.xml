@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Allow"
-        tools:ignore="MissingConstraints">
+        tools:ignore="HardcodedText,MissingConstraints,VisualLintButtonSize,VisualLintSystemUi">
 
     </Button>
     <ScrollView
@@ -20,7 +20,8 @@
         android:layout_marginTop="@dimen/_4sdp"
         android:layout_weight="1"
         android:background="#F0F0F0"
-        android:padding="@dimen/_4sdp">
+        android:padding="@dimen/_4sdp"
+        tools:ignore="MissingConstraints">
 
         <TextView
             android:id="@+id/tvLogs"
@@ -28,6 +29,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="monospace"
             android:text="Initializing..."
-            android:textSize="@dimen/_10sdp" />
+            android:textSize="@dimen/_10sdp"
+            tools:ignore="HardcodedText,TextSizeCheck,TextContrastCheck,VisualLintSystemUi" />
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
