@@ -14,8 +14,10 @@ class MainActivity : androidx.activity.ComponentActivity() {
 
     private val TAG = "ICT_L170_Lalaki"
     private var mSerialPort: SerialPort? = null
+
     // પોલિંગ માટે અલગ થ્રેડ
     private val executor = Executors.newSingleThreadExecutor()
+
     // કમાન્ડ મોકલવા માટે અલગ થ્રેડ (જેથી લૂપ બ્લોક ન થાય)
     private val commandExecutor = Executors.newSingleThreadExecutor()
     private var isRunning = false
@@ -192,7 +194,8 @@ class MainActivity : androidx.activity.ComponentActivity() {
         isRunning = false
         try {
             mSerialPort?.close()
-        } catch (_: Exception) {}
+        } catch (_: Exception) {
+        }
         executor.shutdown()
         commandExecutor.shutdown()
     }
