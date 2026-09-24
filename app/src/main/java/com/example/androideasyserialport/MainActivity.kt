@@ -18,20 +18,16 @@ class MainActivity : androidx.activity.ComponentActivity() {
     // પોલિંગ માટે અલગ થ્રેડ
     private val executor = Executors.newSingleThreadExecutor()
 
-    // કમાન્ડ મોકલવા માટે અલગ થ્રેડ (જેથી લૂપ બ્લોક ન થાય)
+    // કમાન્ડ મોકલવા માટે અલગ થ્રેડ
     private val commandExecutor = Executors.newSingleThreadExecutor()
-    private var isRunning = false
+    @Volatile private var isRunning = false
 
-    // ICT104V પ્રોટોકોલ હેક્સ કમાન્ડ્સ
+    // ICT104U પ્રોટોકોલ હેક્સ કમાન્ડ્સ
     private val CMD_STATUS_POLL = byteArrayOf(0x0C.toByte())
     private val CMD_ACK = byteArrayOf(0x02.toByte())
     private val CMD_ENABLE_ALL_CHANNELS = byteArrayOf(0x3E.toByte())
 
     lateinit var tvLogs: TextView
-
-    // Flag to temporarily pause the 0x0C polling loop while processing a bill
-    @Volatile
-    private var isProcessingBill = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +71,10 @@ class MainActivity : androidx.activity.ComponentActivity() {
                 object : SerialPort.DataCallback {
                     override fun onData(data: ByteArray) {
                         if (data != null && data.isNotEmpty()) {
-                            handleIctResponse(data[0])
+                            // સીરીયલ ડેટામાં ક્યારેક એકસાથે બાઇટ્સ આવી શકે છે, તેથી લૂપ ફરજિયાત છે
+                            for (b in data) {
+                                handleIctResponse(b)
+                            }
                         }
                     }
                 }
@@ -91,19 +90,19 @@ class MainActivity : androidx.activity.ComponentActivity() {
         }
     }
 
-    // સુધારેલું લૂપ: હવે દર ૨૦૦ મિલિસેકન્ડે (200ms) પરફેક્ટ રન થશે
+    // સુધારેલું લૂપ: વેરિફિકેશન વખતે પણ પોલિંગ ક્યારેય અટકશે નહીં
     private fun startLivePollingLoop() {
         if (isRunning) return
         isRunning = true
         executor.execute {
+            // પ્રારંભિક અવસ્થામાં મશીનને જગાડવા માટે એકવાર 0x3E મોકલો
+            mSerialPort?.write(CMD_ENABLE_ALL_CHANNELS)
+
             while (isRunning) {
                 try {
-                    if (!isProcessingBill) {
-                        mSerialPort?.write(CMD_STATUS_POLL)
-                    }
-                    //  mSerialPort?.write(CMD_STATUS_POLL)
-                    // ICT સ્ટાન્ડર્ડ મુજબ ૨૦૦ms નો વેઇટ ટાઇમ ફરજિયાત છે
-                    Thread.sleep(200)
+                    // કરન્સી દાખલ થાય ત્યારે પણ 0x0C પોલિંગ સતત ચાલુ જ રહેશે
+                    mSerialPort?.write(CMD_STATUS_POLL)
+                    Thread.sleep(200) // સ્ટાન્ડર્ડ ૨૦૦ms નો વેઇટ ટાઇમ
                 } catch (e: Exception) {
                     Log.e(TAG, "Poll Error: ${e.message}")
                 }
@@ -123,33 +122,34 @@ class MainActivity : androidx.activity.ComponentActivity() {
             }
 
             0x81.toByte() -> {
-                isProcessingBill = true
-                updateLogs("Note verification in progress")
-                sendAck()
+                updateLogs("Note verification in progress...")
+                sendAck() // વેરિફિકેશન પ્રોસેસને એક્નોલેજ (ACK) કરો
             }
-            // 0x10 is the generic "Bill Stacking" complete byte confirmation from the motor
+
             0x10.toByte() -> {
                 updateLogs("Bill successfully stacked in cashbox.")
                 sendAck()
-                isProcessingBill = false // Resume safe idle polling
             }
+
             0x29.toByte() -> {
                 updateLogs("Error: Bill Rejected (0x29)")
-                sendAck()
-                isProcessingBill = false // Reset state loop
+                sendAck() // રીજેક્શન રિસ્પોન્સને પણ ACK આપો જેથી મશીન આઇડલ મોડમાં આવે
             }
-            0x40.toByte() -> showDenomination("5 AED")
-            0x41.toByte() -> showDenomination("10 AED")
-            0x42.toByte() -> showDenomination("20 AED")
-            0x43.toByte() -> showDenomination("50 AED")
-            0x44.toByte() -> showDenomination("100 AED")
-            0x45.toByte() -> showDenomination("200 AED")
-            0x46.toByte() -> showDenomination("500 AED")
-            0x47.toByte() -> showDenomination("1000 AED")
 
-            0x22.toByte() -> { updateLogs("Note jam"); isProcessingBill = false }
-            0x23.toByte() -> { updateLogs("Return note"); isProcessingBill = false }
-            0x24.toByte() -> { updateLogs("Box open"); isProcessingBill = false }
+            // દરેક કરન્સી ચેનલ ઓળખાયા પછી તાત્કાલિક sendAck() આપવું અનિવાર્ય છે
+            0x40.toByte() -> { showDenomination("5 AED"); sendAck() }
+            0x41.toByte() -> { showDenomination("10 AED"); sendAck() }
+            0x42.toByte() -> { showDenomination("20 AED"); sendAck() }
+            0x43.toByte() -> { showDenomination("50 AED"); sendAck() }
+            0x44.toByte() -> { showDenomination("100 AED"); sendAck() }
+            0x45.toByte() -> { showDenomination("200 AED"); sendAck() }
+            0x46.toByte() -> { showDenomination("500 AED"); sendAck() }
+            0x47.toByte() -> { showDenomination("1000 AED"); sendAck() }
+
+            0x22.toByte() -> updateLogs("Note jam")
+            0x23.toByte() -> updateLogs("Return note")
+            0x24.toByte() -> updateLogs("Box open")
+
             0x0E.toByte() -> {
                 updateLogs("Status: Machine Disabled. Waking up...")
                 enableBillAcceptor()
@@ -161,12 +161,12 @@ class MainActivity : androidx.activity.ComponentActivity() {
         }
     }
 
-    // નવું ફંક્શન: બેકગ્રાઉન્ડ થ્રેડમાં સેફલી કમાન્ડ ફાયર કરશે
     private fun enableBillAcceptor() {
         commandExecutor.execute {
             try {
                 mSerialPort?.write(CMD_ACK)
                 Thread.sleep(60) // સેફ ગેપ 60
+                // 0x0E મળવા પર મશીનને એક્ટિવેટ કરવા સીધો 0x3E ફાયર કરો
                 mSerialPort?.write(CMD_ENABLE_ALL_CHANNELS)
                 Log.d(TAG, "Sent 0x3E activation command.")
                 updateLogs("Sent 0x3E activation command.")
@@ -187,7 +187,6 @@ class MainActivity : androidx.activity.ComponentActivity() {
     private fun updateLogs(message: String) {
         runOnUiThread {
             val currentText = tvLogs.text.toString()
-            // લોગ લાઈન લિમિટ સેટ કરો જેથી મેમરી ફૂલ ન થાય
             val lines = currentText.split("\n")
             val newText = if (lines.size > 20) {
                 lines.drop(1).joinToString("\n") + "\n $message"
