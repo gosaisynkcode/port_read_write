@@ -29,6 +29,10 @@ class MainActivity : androidx.activity.ComponentActivity() {
 
     lateinit var tvLogs: TextView
 
+    // Flag to temporarily pause the 0x0C polling loop while processing a bill
+    @Volatile
+    private var isProcessingBill = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
@@ -94,7 +98,10 @@ class MainActivity : androidx.activity.ComponentActivity() {
         executor.execute {
             while (isRunning) {
                 try {
-                    mSerialPort?.write(CMD_STATUS_POLL)
+                    if (!isProcessingBill) {
+                        mSerialPort?.write(CMD_STATUS_POLL)
+                    }
+                    //  mSerialPort?.write(CMD_STATUS_POLL)
                     // ICT સ્ટાન્ડર્ડ મુજબ ૨૦૦ms નો વેઇટ ટાઇમ ફરજિયાત છે
                     Thread.sleep(200)
                 } catch (e: Exception) {
@@ -116,10 +123,21 @@ class MainActivity : androidx.activity.ComponentActivity() {
             }
 
             0x81.toByte() -> {
+                isProcessingBill = true
                 updateLogs("Note verification in progress")
                 sendAck()
             }
-
+            // 0x10 is the generic "Bill Stacking" complete byte confirmation from the motor
+            0x10.toByte() -> {
+                updateLogs("Bill successfully stacked in cashbox.")
+                sendAck()
+                isProcessingBill = false // Resume safe idle polling
+            }
+            0x29.toByte() -> {
+                updateLogs("Error: Bill Rejected (0x29)")
+                sendAck()
+                isProcessingBill = false // Reset state loop
+            }
             0x40.toByte() -> showDenomination("5 AED")
             0x41.toByte() -> showDenomination("10 AED")
             0x42.toByte() -> showDenomination("20 AED")
@@ -129,10 +147,9 @@ class MainActivity : androidx.activity.ComponentActivity() {
             0x46.toByte() -> showDenomination("500 AED")
             0x47.toByte() -> showDenomination("1000 AED")
 
-            0x22.toByte() -> updateLogs("Note jam")
-            0x23.toByte() -> updateLogs("Return note")
-            0x24.toByte() -> updateLogs("Box open")
-
+            0x22.toByte() -> { updateLogs("Note jam"); isProcessingBill = false }
+            0x23.toByte() -> { updateLogs("Return note"); isProcessingBill = false }
+            0x24.toByte() -> { updateLogs("Box open"); isProcessingBill = false }
             0x0E.toByte() -> {
                 updateLogs("Status: Machine Disabled. Waking up...")
                 enableBillAcceptor()
@@ -149,7 +166,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
         commandExecutor.execute {
             try {
                 mSerialPort?.write(CMD_ACK)
-                Thread.sleep(60) // સેફ ગેપ
+                Thread.sleep(60) // સેફ ગેપ 60
                 mSerialPort?.write(CMD_ENABLE_ALL_CHANNELS)
                 Log.d(TAG, "Sent 0x3E activation command.")
                 updateLogs("Sent 0x3E activation command.")
