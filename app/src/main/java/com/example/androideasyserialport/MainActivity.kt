@@ -104,6 +104,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
                 try {
                     // કરન્સી દાખલ થાય ત્યારે પણ 0x0C પોલિંગ સતત ચાલુ જ રહેશે
                     mSerialPort?.write(CMD_STATUS_POLL)
+                    updateLogs("DATA : CMD_STATUS_POLL")
                     Thread.sleep(150) // સ્ટાન્ડર્ડ ૨૦૦ms નો વેઇટ ટાઇમ
                 } catch (e: Exception) {
                     e.printStackTrace()

@@ -19,34 +19,12 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/bt_permison"
+                android:id="@+id/bt_allow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/_5sdp"
                 android:padding="@dimen/_5sdp"
                 android:text="Allow"
-                android:textSize="@dimen/_10sdp"
-                android:textStyle="bold"
-                tools:ignore="ButtonStyle,HardcodedText,TextSizeCheck,VisualLintSystemUi" />
-
-            <Button
-                android:id="@+id/btnEnable"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_5sdp"
-                android:padding="@dimen/_5sdp"
-                android:text="Enable"
-                android:textSize="@dimen/_10sdp"
-                android:textStyle="bold"
-                tools:ignore="ButtonStyle,HardcodedText,TextSizeCheck,VisualLintSystemUi" />
-
-
-            <Button
-                android:id="@+id/btnDisable"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/_5sdp"
-                android:text="Disable"
                 android:textSize="@dimen/_10sdp"
                 android:textStyle="bold"
                 tools:ignore="ButtonStyle,HardcodedText,TextSizeCheck,VisualLintSystemUi" />
