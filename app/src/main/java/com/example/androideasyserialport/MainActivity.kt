@@ -30,12 +30,14 @@ class MainActivity : androidx.activity.ComponentActivity() {
     private val CMD_ENABLE_ALL_CHANNELS = byteArrayOf(0x3E.toByte())
 
     lateinit var tvLogs: TextView
+    lateinit var bt_allow: Button
+    var count: Int=0;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
 
-        val bt_allow = findViewById<Button>(R.id.bt_allow)
+        bt_allow = findViewById<Button>(R.id.bt_allow)
         tvLogs = findViewById(R.id.tvLogs)
 
         bt_allow.setOnClickListener {
@@ -104,7 +106,10 @@ class MainActivity : androidx.activity.ComponentActivity() {
                 try {
                     // કરન્સી દાખલ થાય ત્યારે પણ 0x0C પોલિંગ સતત ચાલુ જ રહેશે
                     mSerialPort?.write(CMD_STATUS_POLL)
-                    updateLogs("DATA : CMD_STATUS_POLL")
+                    runOnUiThread {
+                        count=count+1
+                        bt_allow.text="DATA : CMD_STATUS_POLL "+count
+                    }
                     Thread.sleep(150) // સ્ટાન્ડર્ડ ૨૦૦ms નો વેઇટ ટાઇમ
                 } catch (e: Exception) {
                     e.printStackTrace()

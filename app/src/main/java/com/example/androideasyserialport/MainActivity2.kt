@@ -1,14 +1,5 @@
 package com.example.androideasyserialport
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
-import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
-import cn.lalaki.SerialPort
-import java.io.DataOutputStream
-
 /*class MainActivity2 : Activity() {
     private var serialPort: SerialPort? = null
     private lateinit var tvLogs: TextView
@@ -148,7 +139,13 @@ import java.io.DataOutputStream
     }
 }*/
 
+import android.content.Intent
+import android.os.Bundle
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
+import cn.lalaki.SerialPort
+import java.io.DataOutputStream
 import java.io.IOException
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
@@ -160,11 +157,13 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
 
     // સિંગલ સીરીયલ થ્રેડ એક્ઝિક્યુટર
     private val singleThreadExecutor = Executors.newSingleThreadExecutor()
-    @Volatile private var isRunning = false
+    @Volatile
+    private var isRunning = false
 
     // પ્રોટોકોલ સિંક્રોનાઇઝેશન ફ્લેગ્સ
     private val requestActivation = AtomicBoolean(false)
-    @Volatile private var isMachineReady = false
+    @Volatile
+    private var isMachineReady = false
 
     // ICT104U સત્તાવાર હેક્સ કમાન્ડ્સ
     private val CMD_STATUS_POLL = byteArrayOf(0x0C.toByte())
@@ -172,15 +171,16 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
     private val CMD_ENABLE_ALL_CHANNELS = byteArrayOf(0x3E.toByte())
 
     lateinit var tvLogs: TextView
-
+    lateinit var bt_allow: Button
+    var count: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val bt_allow = findViewById<Button>(R.id.bt_allow)
+        bt_allow = findViewById<Button>(R.id.bt_allow)
         tvLogs = findViewById(R.id.tvLogs)
 
-        val btnnext=findViewById<Button>(R.id.btnnext)
+        val btnnext = findViewById<Button>(R.id.btnnext)
 
         btnnext.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
@@ -259,7 +259,11 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
 
                     // પોલિંગ કમાન્ડ (માત્ર મશીન તૈયાર થયા પછી જ ચાલુ થશે જેથી ડેટા ઓવરલેપ ન થાય)
                     mSerialPort?.write(CMD_STATUS_POLL)
-                    updateLogs("DATA : CMD_STATUS_POLL")
+                    runOnUiThread {
+                        count = count+1
+                        bt_allow.text = "CMD_STATUS_POLL " + count
+                    }
+
                     // ICT104U સ્ટાન્ડર્ડ ટાઇમિંગ ગેપ
                     Thread.sleep(130)
                 } catch (e: Exception) {
@@ -295,14 +299,37 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
             }
 
             // કરન્સી ચેનલો ઓળખાયા પછી ફરજિયાત ACK
-            0x40.toByte() -> { showDenomination("5 AED"); sendAck() }
-            0x41.toByte() -> { showDenomination("10 AED"); sendAck() }
-            0x42.toByte() -> { showDenomination("20 AED"); sendAck() }
-            0x43.toByte() -> { showDenomination("50 AED"); sendAck() }
-            0x44.toByte() -> { showDenomination("100 AED"); sendAck() }
-            0x45.toByte() -> { showDenomination("200 AED"); sendAck() }
-            0x46.toByte() -> { showDenomination("500 AED"); sendAck() }
-            0x47.toByte() -> { showDenomination("1000 AED"); sendAck() }
+            0x40.toByte() -> {
+                showDenomination("5 AED"); sendAck()
+            }
+
+            0x41.toByte() -> {
+                showDenomination("10 AED"); sendAck()
+            }
+
+            0x42.toByte() -> {
+                showDenomination("20 AED"); sendAck()
+            }
+
+            0x43.toByte() -> {
+                showDenomination("50 AED"); sendAck()
+            }
+
+            0x44.toByte() -> {
+                showDenomination("100 AED"); sendAck()
+            }
+
+            0x45.toByte() -> {
+                showDenomination("200 AED"); sendAck()
+            }
+
+            0x46.toByte() -> {
+                showDenomination("500 AED"); sendAck()
+            }
+
+            0x47.toByte() -> {
+                showDenomination("1000 AED"); sendAck()
+            }
 
             0x22.toByte() -> updateLogs("Note jam")
             0x23.toByte() -> updateLogs("Return note")
@@ -353,7 +380,8 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
         isRunning = false
         try {
             mSerialPort?.close()
-        } catch (_: Exception) {}
+        } catch (_: Exception) {
+        }
         singleThreadExecutor.shutdown()
     }
 }
