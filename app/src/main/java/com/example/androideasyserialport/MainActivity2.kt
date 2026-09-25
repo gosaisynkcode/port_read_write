@@ -157,11 +157,13 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
 
     // સિંગલ સીરીયલ થ્રેડ એક્ઝિક્યુટર
     private val singleThreadExecutor = Executors.newSingleThreadExecutor()
+
     @Volatile
     private var isRunning = false
 
     // પ્રોટોકોલ સિંક્રોનાઇઝેશન ફ્લેગ્સ
     private val requestActivation = AtomicBoolean(false)
+
     @Volatile
     private var isMachineReady = false
 
@@ -260,7 +262,7 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
                     // પોલિંગ કમાન્ડ (માત્ર મશીન તૈયાર થયા પછી જ ચાલુ થશે જેથી ડેટા ઓવરલેપ ન થાય)
                     mSerialPort?.write(CMD_STATUS_POLL)
                     runOnUiThread {
-                        count = count+1
+                        count = count + 1
                         bt_allow.text = "CMD_STATUS_POLL " + count
                     }
 

@@ -1,7 +1,6 @@
 package com.example.androideasyserialport
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -31,7 +30,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
 
     lateinit var tvLogs: TextView
     lateinit var bt_allow: Button
-    var count: Int=0;
+    var count: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,7 +88,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
             startLivePollingLoop()
 
         } catch (e: Exception) {
-           // Log.e(TAG, "Serial port open error: ${e.message}")
+            // Log.e(TAG, "Serial port open error: ${e.message}")
             updateLogs("Serial port open error: ${e.message}")
         }
     }
@@ -107,13 +106,13 @@ class MainActivity : androidx.activity.ComponentActivity() {
                     // કરન્સી દાખલ થાય ત્યારે પણ 0x0C પોલિંગ સતત ચાલુ જ રહેશે
                     mSerialPort?.write(CMD_STATUS_POLL)
                     runOnUiThread {
-                        count=count+1
-                        bt_allow.text="DATA : CMD_STATUS_POLL "+count
+                        count = count + 1
+                        bt_allow.text = "DATA : CMD_STATUS_POLL " + count
                     }
                     Thread.sleep(150) // સ્ટાન્ડર્ડ ૨૦૦ms નો વેઇટ ટાઇમ
                 } catch (e: Exception) {
                     e.printStackTrace()
-                  //  Log.e(TAG, "Poll Error: ${e.message}")
+                    //  Log.e(TAG, "Poll Error: ${e.message}")
                 }
             }
         }
