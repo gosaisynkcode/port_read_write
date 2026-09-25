@@ -20,7 +20,8 @@ class MainActivity : androidx.activity.ComponentActivity() {
 
     // કમાન્ડ મોકલવા માટે અલગ થ્રેડ
     private val commandExecutor = Executors.newSingleThreadExecutor()
-    @Volatile private var isRunning = false
+    @Volatile
+    private var isRunning = false
 
     // ICT104U પ્રોટોકોલ હેક્સ કમાન્ડ્સ
     private val CMD_STATUS_POLL = byteArrayOf(0x0C.toByte())
@@ -137,14 +138,37 @@ class MainActivity : androidx.activity.ComponentActivity() {
             }
 
             // દરેક કરન્સી ચેનલ ઓળખાયા પછી તાત્કાલિક sendAck() આપવું અનિવાર્ય છે
-            0x40.toByte() -> { showDenomination("5 AED"); sendAck() }
-            0x41.toByte() -> { showDenomination("10 AED"); sendAck() }
-            0x42.toByte() -> { showDenomination("20 AED"); sendAck() }
-            0x43.toByte() -> { showDenomination("50 AED"); sendAck() }
-            0x44.toByte() -> { showDenomination("100 AED"); sendAck() }
-            0x45.toByte() -> { showDenomination("200 AED"); sendAck() }
-            0x46.toByte() -> { showDenomination("500 AED"); sendAck() }
-            0x47.toByte() -> { showDenomination("1000 AED"); sendAck() }
+            0x40.toByte() -> {
+                showDenomination("5 AED"); sendAck()
+            }
+
+            0x41.toByte() -> {
+                showDenomination("10 AED"); sendAck()
+            }
+
+            0x42.toByte() -> {
+                showDenomination("20 AED"); sendAck()
+            }
+
+            0x43.toByte() -> {
+                showDenomination("50 AED"); sendAck()
+            }
+
+            0x44.toByte() -> {
+                showDenomination("100 AED"); sendAck()
+            }
+
+            0x45.toByte() -> {
+                showDenomination("200 AED"); sendAck()
+            }
+
+            0x46.toByte() -> {
+                showDenomination("500 AED"); sendAck()
+            }
+
+            0x47.toByte() -> {
+                showDenomination("1000 AED"); sendAck()
+            }
 
             0x22.toByte() -> updateLogs("Note jam")
             0x23.toByte() -> updateLogs("Return note")
@@ -164,6 +188,15 @@ class MainActivity : androidx.activity.ComponentActivity() {
     private fun enableBillAcceptor() {
         commandExecutor.execute {
             try {
+                //New Code Add
+                updateLogs("TX >> Reset (0x30)")
+                mSerialPort?.write(byteArrayOf(0x30))
+
+                // CRITICAL: Wait 2 seconds for the validator to fully boot up
+                Thread.sleep(2000)
+
+                //New Code End
+
                 mSerialPort?.write(CMD_ACK)
                 Thread.sleep(60) // સેફ ગેપ 60
                 // 0x0E મળવા પર મશીનને એક્ટિવેટ કરવા સીધો 0x3E ફાયર કરો
