@@ -20,6 +20,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
 
     // કમાન્ડ મોકલવા માટે અલગ થ્રેડ
     private val commandExecutor = Executors.newSingleThreadExecutor()
+
     @Volatile
     private var isRunning = false
 
@@ -53,7 +54,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
 
             updateLogs("Root permission allowed.")
         } catch (e: Exception) {
-            Log.e(TAG, "Root Error: ${e.message}")
+            e.printStackTrace()
         }
 
         val portPath = "/dev/ttyS4"
@@ -82,11 +83,11 @@ class MainActivity : androidx.activity.ComponentActivity() {
             )
 
             updateLogs("$portPath port open done.")
-            Log.d(TAG, "$portPath port open done.")
+            //Log.d(TAG, "$portPath port open done.")
             startLivePollingLoop()
 
         } catch (e: Exception) {
-            Log.e(TAG, "Serial port open error: ${e.message}")
+           // Log.e(TAG, "Serial port open error: ${e.message}")
             updateLogs("Serial port open error: ${e.message}")
         }
     }
@@ -105,7 +106,8 @@ class MainActivity : androidx.activity.ComponentActivity() {
                     mSerialPort?.write(CMD_STATUS_POLL)
                     Thread.sleep(200) // સ્ટાન્ડર્ડ ૨૦૦ms નો વેઇટ ટાઇમ
                 } catch (e: Exception) {
-                    Log.e(TAG, "Poll Error: ${e.message}")
+                    e.printStackTrace()
+                  //  Log.e(TAG, "Poll Error: ${e.message}")
                 }
             }
         }
@@ -113,7 +115,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
 
     private fun handleIctResponse(responseByte: Byte) {
         val hexString = String.format("%02X", responseByte)
-        Log.d(TAG, "મળેલ ડેટા: 0x$hexString")
+        //Log.d(TAG, "મળેલ ડેટા: 0x$hexString")
         updateLogs("DATA : 0x$hexString")
 
         when (responseByte) {
@@ -180,7 +182,8 @@ class MainActivity : androidx.activity.ComponentActivity() {
             }
 
             0x3E.toByte() -> {
-                Log.i(TAG, "Status: Machine Ready (Solid Light).")
+                updateLogs("Status: Machine Ready (Solid Light).")
+
             }
         }
     }
@@ -201,10 +204,10 @@ class MainActivity : androidx.activity.ComponentActivity() {
                 Thread.sleep(60) // સેફ ગેપ 60
                 // 0x0E મળવા પર મશીનને એક્ટિવેટ કરવા સીધો 0x3E ફાયર કરો
                 mSerialPort?.write(CMD_ENABLE_ALL_CHANNELS)
-                Log.d(TAG, "Sent 0x3E activation command.")
+
                 updateLogs("Sent 0x3E activation command.")
             } catch (e: Exception) {
-                Log.e(TAG, "Failed to send enable command: ${e.message}")
+                e.printStackTrace()
             }
         }
     }
@@ -213,7 +216,8 @@ class MainActivity : androidx.activity.ComponentActivity() {
         try {
             mSerialPort?.write(CMD_ACK)
         } catch (e: IOException) {
-            Log.e(TAG, "ACK Error: ${e.message}")
+            e.printStackTrace()
+            //Log.e(TAG, "ACK Error: ${e.message}")
         }
     }
 
@@ -235,7 +239,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
             Toast.makeText(this, "Payment done : $amount", Toast.LENGTH_LONG).show()
         }
         updateLogs("Payment done : $amount")
-        Log.i(TAG, "--> $amount add")
+        //Log.i(TAG, "--> $amount add")
     }
 
     override fun onDestroy() {
