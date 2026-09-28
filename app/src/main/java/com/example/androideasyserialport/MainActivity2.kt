@@ -228,7 +228,6 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
                     }
                 }
             )
-
             updateLogs("$portPath port open done.")
             startUnifiedSerialLoop()
 
