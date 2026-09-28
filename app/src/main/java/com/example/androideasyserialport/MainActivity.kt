@@ -11,7 +11,6 @@ import java.util.concurrent.Executors
 
 class MainActivity : androidx.activity.ComponentActivity() {
 
-    private val TAG = "ICT_L170_Lalaki"
     private var mSerialPort: SerialPort? = null
 
     // પોલિંગ માટે અલગ થ્રેડ
