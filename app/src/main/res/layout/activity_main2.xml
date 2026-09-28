@@ -13,7 +13,7 @@
         android:text="Allow"
         android:textSize="@dimen/_10sdp"
         android:textStyle="bold"
-        tools:ignore="HardcodedText,MissingConstraints,VisualLintButtonSize,VisualLintSystemUi,TextSizeCheck"/>
+        tools:ignore="HardcodedText,MissingConstraints,VisualLintButtonSize,VisualLintSystemUi,TextSizeCheck" />
 
     <ScrollView
         android:layout_width="match_parent"
