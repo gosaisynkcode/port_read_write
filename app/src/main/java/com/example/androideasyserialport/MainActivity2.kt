@@ -151,8 +151,6 @@ import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
 class MainActivity2 : androidx.activity.ComponentActivity() {
-
-    private val TAG = "ICT_L170_Lalaki"
     private var mSerialPort: SerialPort? = null
 
     // સિંગલ સીરીયલ થ્રેડ એક્ઝિક્યુટર
