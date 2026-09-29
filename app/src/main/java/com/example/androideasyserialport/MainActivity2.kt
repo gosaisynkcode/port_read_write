@@ -221,7 +221,7 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
                     override fun onData(data: ByteArray) {
                         if (data != null && data.isNotEmpty()) {
                             runOnUiThread {
-                                updateLogs(Gson().toJson(data))
+                                updateLogs("HEX DATA "+Gson().toJson(data))
                             }
                             for (b in data) {
                                 handleIctResponse(b)
