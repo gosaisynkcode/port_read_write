@@ -1,11 +1,19 @@
 package com.example.androideasyserialport
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import cn.lalaki.SerialPort
-import com.google.gson.Gson
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
+import retrofit2.http.POST
 import java.io.DataOutputStream
 import java.io.IOException
 import java.util.concurrent.Executors
@@ -13,17 +21,19 @@ import java.util.concurrent.Executors
 class MainActivity : androidx.activity.ComponentActivity() {
 
     private var mSerialPort: SerialPort? = null
-
-    // પોલિંગ માટે અલગ થ્રેડ
     private val executor = Executors.newSingleThreadExecutor()
-
-    // કમાન્ડ મોકલવા માટે અલગ થ્રેડ
     private val commandExecutor = Executors.newSingleThreadExecutor()
 
     @Volatile
     private var isRunning = false
 
-    // ICT104U પ્રોટોકોલ હેક્સ કમાન્ડ્સ
+    // CRITICAL FIX: Tracks if a bill transaction is mid-flight to stop polling noise
+    @Volatile
+    private var isProcessingBill = false
+
+    private val serialLock = Any()
+
+    // ICT104U Protocol Hex Commands
     private val CMD_STATUS_POLL = byteArrayOf(0x0C.toByte())
     private val CMD_ACK = byteArrayOf(0x02.toByte())
     private val CMD_ENABLE_ALL_CHANNELS = byteArrayOf(0x3E.toByte())
@@ -52,14 +62,13 @@ class MainActivity : androidx.activity.ComponentActivity() {
             os.writeBytes("exit\n")
             os.flush()
             process.waitFor()
-
             updateLogs("Root permission allowed.")
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
         val portPath = "/dev/ttyS4"
-        val baudRate = 9600
+        val baudRate = 9600 // ICT104U Standard: 9600, Even Parity, 8 Data, 1 Stop
 
         try {
             mSerialPort = SerialPort(
@@ -74,7 +83,6 @@ class MainActivity : androidx.activity.ComponentActivity() {
                 object : SerialPort.DataCallback {
                     override fun onData(data: ByteArray) {
                         if (data != null && data.isNotEmpty()) {
-                            // સીરીયલ ડેટામાં ક્યારેક એકસાથે બાઇટ્સ આવી શકે છે, તેથી લૂપ ફરજિયાત છે
                             for (b in data) {
                                 handleIctResponse(b)
                             }
@@ -84,36 +92,34 @@ class MainActivity : androidx.activity.ComponentActivity() {
             )
 
             updateLogs("$portPath port open done.")
-            //Log.d(TAG, "$portPath port open done.")
             startLivePollingLoop()
 
         } catch (e: Exception) {
             e.printStackTrace()
-            // Log.e(TAG, "Serial port open error: ${e.message}")
             updateLogs("Serial port open error: ${e.message}")
         }
     }
 
-    // સુધારેલું લૂપ: વેરિફિકેશન વખતે પણ પોલિંગ ક્યારેય અટકશે નહીં
     private fun startLivePollingLoop() {
         if (isRunning) return
         isRunning = true
         executor.execute {
-            // પ્રારંભિક અવસ્થામાં મશીનને જગાડવા માટે એકવાર 0x3E મોકલો
-            mSerialPort?.write(CMD_ENABLE_ALL_CHANNELS)
+            safeWrite(CMD_ENABLE_ALL_CHANNELS)
+            Thread.sleep(200)
 
             while (isRunning) {
                 try {
-                    // કરન્સી દાખલ થાય ત્યારે પણ 0x0C પોલિંગ સતત ચાલુ જ રહેશે
-                    mSerialPort?.write(CMD_STATUS_POLL)
-                    runOnUiThread {
-                        count = count + 1
-                        bt_allow.text = "DATA : CMD_STATUS_POLL " + count
+                    // Only poll if we are NOT actively validating a bill
+                    if (!isProcessingBill) {
+                        safeWrite(CMD_STATUS_POLL)
+                        runOnUiThread {
+                            count++
+                            bt_allow.text = "DATA : CMD_STATUS_POLL $count"
+                        }
                     }
-                    Thread.sleep(150) // સ્ટાન્ડર્ડ ૨૦૦ms નો વેઇટ ટાઇમ
+                    Thread.sleep(150)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    //  Log.e(TAG, "Poll Error: ${e.message}")
                 }
             }
         }
@@ -121,31 +127,42 @@ class MainActivity : androidx.activity.ComponentActivity() {
 
     private fun handleIctResponse(responseByte: Byte) {
         val hexString = String.format("%02X", responseByte)
-        //Log.d(TAG, "મળેલ ડેટા: 0x$hexString")
         updateLogs("DATA : 0x$hexString")
+        runOnUiThread {
+            val request1 = CoinRequest(
+                "hexString  " + hexString + " responseByte  " + responseByte,
+                "1 NUM",
+                status = "SUCCESS"
+            )
+            sendCoinData(request1)
+        }
 
         when (responseByte) {
             0x80.toByte() -> {
                 updateLogs("Power On")
+                isProcessingBill = false
                 sendAck()
             }
 
             0x81.toByte() -> {
                 updateLogs("Note verification in progress...")
-                sendAck() // વેરિફિકેશન પ્રોસેસને એક્નોલેજ (ACK) કરો
+                isProcessingBill = true // PAUSE POLLING INSTANTLY
+                sendAck()
             }
 
             0x10.toByte() -> {
                 updateLogs("Bill successfully stacked in cashbox.")
+                isProcessingBill = false // RESUME POLLING
                 sendAck()
             }
 
             0x29.toByte() -> {
                 updateLogs("Error: Bill Rejected (0x29)")
-                sendAck() // રીજેક્શન રિસ્પોન્સને પણ ACK આપો જેથી મશીન આઇડલ મોડમાં આવે
+                isProcessingBill = false // RESUME POLLING
+                sendAck()
             }
 
-            // દરેક કરન્સી ચેનલ ઓળખાયા પછી તાત્કાલિક sendAck() આપવું અનિવાર્ય છે
+            // Currency Channels
             0x40.toByte() -> {
                 showDenomination("5 AED"); sendAck()
             }
@@ -178,8 +195,14 @@ class MainActivity : androidx.activity.ComponentActivity() {
                 showDenomination("1000 AED"); sendAck()
             }
 
-            0x22.toByte() -> updateLogs("Note jam")
-            0x23.toByte() -> updateLogs("Return note")
+            0x22.toByte() -> {
+                updateLogs("Note jam"); isProcessingBill = false; sendAck()
+            }
+
+            0x23.toByte() -> {
+                updateLogs("Return note"); isProcessingBill = false; sendAck()
+            }
+
             0x24.toByte() -> updateLogs("Box open")
 
             0x0E.toByte() -> {
@@ -188,8 +211,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
             }
 
             0x3E.toByte() -> {
-                updateLogs("Status: Machine Ready (Solid Light).")
-
+                updateLogs("Status: Machine Ready.")
             }
         }
     }
@@ -197,20 +219,14 @@ class MainActivity : androidx.activity.ComponentActivity() {
     private fun enableBillAcceptor() {
         commandExecutor.execute {
             try {
-                //New Code Add
                 updateLogs("TX >> Reset (0x30)")
-                mSerialPort?.write(byteArrayOf(0x30))
-
-                // CRITICAL: Wait 2 seconds for the validator to fully boot up
+                safeWrite(byteArrayOf(0x30))
                 Thread.sleep(2000)
 
-                //New Code End
+                safeWrite(CMD_ACK)
+                Thread.sleep(100)
 
-                mSerialPort?.write(CMD_ACK)
-                Thread.sleep(60) // સેફ ગેપ 60
-                // 0x0E મળવા પર મશીનને એક્ટિવેટ કરવા સીધો 0x3E ફાયર કરો
-                mSerialPort?.write(CMD_ENABLE_ALL_CHANNELS)
-
+                safeWrite(CMD_ENABLE_ALL_CHANNELS)
                 updateLogs("Sent 0x3E activation command.")
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -219,11 +235,16 @@ class MainActivity : androidx.activity.ComponentActivity() {
     }
 
     private fun sendAck() {
-        try {
-            mSerialPort?.write(CMD_ACK)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            //Log.e(TAG, "ACK Error: ${e.message}")
+        safeWrite(CMD_ACK)
+    }
+
+    private fun safeWrite(data: ByteArray) {
+        synchronized(serialLock) {
+            try {
+                mSerialPort?.write(data)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -245,7 +266,6 @@ class MainActivity : androidx.activity.ComponentActivity() {
             Toast.makeText(this, "Payment done : $amount", Toast.LENGTH_LONG).show()
         }
         updateLogs("Payment done : $amount")
-        //Log.i(TAG, "--> $amount add")
     }
 
     override fun onDestroy() {
@@ -258,5 +278,64 @@ class MainActivity : androidx.activity.ComponentActivity() {
         }
         executor.shutdown()
         commandExecutor.shutdown()
+    }
+
+    data class CoinRequest(
+        val message: String,
+        val ling_num: String,
+        val status: String
+    )
+
+    // ---------------- API ----------------
+    //INBOX TARGET URL:
+    //https://api.webhookinbox.com/i/VbeFfZzP/in/
+    interface ApiService {
+        @POST("i/7ltzMnRK/in/")
+        fun sendCoin(
+            @Body request: CoinRequest
+        ): Call<ResponseBody>
+    }
+
+    // ---------------- SEND API ----------------
+
+    fun sendCoinData(request: CoinRequest) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://api.webhookinbox.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val api = retrofit.create(ApiService::class.java)
+
+
+        api.sendCoin(request).enqueue(object : Callback<ResponseBody> {
+
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+
+                Toast.makeText(
+                    this@MainActivity,
+                    "Success : ${response.code()}",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                Log.e("API", "Success")
+            }
+
+            override fun onFailure(
+                call: Call<ResponseBody>,
+                t: Throwable
+            ) {
+
+                Toast.makeText(
+                    this@MainActivity,
+                    t.message,
+                    Toast.LENGTH_LONG
+                ).show()
+
+                Log.e("API", t.message ?: "Unknown Error")
+            }
+        })
     }
 }
