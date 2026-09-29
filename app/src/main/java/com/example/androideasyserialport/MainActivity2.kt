@@ -145,6 +145,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import cn.lalaki.SerialPort
+import com.google.gson.Gson
 import java.io.DataOutputStream
 import java.io.IOException
 import java.util.concurrent.Executors
@@ -219,6 +220,9 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
                 object : SerialPort.DataCallback {
                     override fun onData(data: ByteArray) {
                         if (data != null && data.isNotEmpty()) {
+                            runOnUiThread {
+                                updateLogs(Gson().toJson(data))
+                            }
                             for (b in data) {
                                 handleIctResponse(b)
                             }

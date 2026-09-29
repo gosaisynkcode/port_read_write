@@ -60,6 +60,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.2")
     implementation(libs.serialport.android)
     implementation(libs.material)
+    implementation("com.google.code.gson:gson:2.11.0")
     implementation("com.intuit.sdp:sdp-android:1.1.1")
     implementation("com.google.guava:guava:33.5.0-android")
     testImplementation(libs.junit)
