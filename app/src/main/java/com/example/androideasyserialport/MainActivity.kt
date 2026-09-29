@@ -74,10 +74,6 @@ class MainActivity : androidx.activity.ComponentActivity() {
                 object : SerialPort.DataCallback {
                     override fun onData(data: ByteArray) {
                         if (data != null && data.isNotEmpty()) {
-
-                            runOnUiThread {
-                                updateLogs(Gson().toJson(data))
-                            }
                             // સીરીયલ ડેટામાં ક્યારેક એકસાથે બાઇટ્સ આવી શકે છે, તેથી લૂપ ફરજિયાત છે
                             for (b in data) {
                                 handleIctResponse(b)

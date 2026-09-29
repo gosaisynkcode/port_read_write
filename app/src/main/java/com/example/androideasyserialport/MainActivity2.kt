@@ -220,9 +220,6 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
                 object : SerialPort.DataCallback {
                     override fun onData(data: ByteArray) {
                         if (data != null && data.isNotEmpty()) {
-                            runOnUiThread {
-                                updateLogs("HEX DATA "+Gson().toJson(data))
-                            }
                             for (b in data) {
                                 handleIctResponse(b)
                             }
