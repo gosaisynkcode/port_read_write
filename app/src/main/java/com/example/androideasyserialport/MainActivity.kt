@@ -88,6 +88,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
             startLivePollingLoop()
 
         } catch (e: Exception) {
+            e.printStackTrace()
             // Log.e(TAG, "Serial port open error: ${e.message}")
             updateLogs("Serial port open error: ${e.message}")
         }
@@ -252,7 +253,8 @@ class MainActivity : androidx.activity.ComponentActivity() {
         isRunning = false
         try {
             mSerialPort?.close()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
         executor.shutdown()
         commandExecutor.shutdown()

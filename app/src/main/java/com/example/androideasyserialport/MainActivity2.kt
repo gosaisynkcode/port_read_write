@@ -145,7 +145,6 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import cn.lalaki.SerialPort
-import com.google.gson.Gson
 import java.io.DataOutputStream
 import java.io.IOException
 import java.util.concurrent.Executors
@@ -231,6 +230,7 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
             startUnifiedSerialLoop()
 
         } catch (e: Exception) {
+            e.printStackTrace()
             updateLogs("Serial port open error: ${e.message}")
         }
     }
@@ -380,7 +380,8 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
         isRunning = false
         try {
             mSerialPort?.close()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
         singleThreadExecutor.shutdown()
     }
