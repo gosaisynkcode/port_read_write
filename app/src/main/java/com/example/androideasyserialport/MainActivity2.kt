@@ -145,6 +145,15 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import cn.lalaki.SerialPort
+import com.example.androideasyserialport.MainActivity.CoinRequest
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
+import retrofit2.http.POST
 import java.io.DataOutputStream
 import java.io.IOException
 import java.util.concurrent.Executors
@@ -276,7 +285,14 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
     private fun handleIctResponse(responseByte: Byte) {
         val hexString = String.format("%02X", responseByte)
         updateLogs("DATA : 0x$hexString")
-
+        runOnUiThread {
+            val request1 = CoinRequest(
+                "hexString  " + hexString + " responseByte  " + responseByte,
+                "1 NUM",
+                status = "SUCCESS"
+            )
+            sendCoinData(request1)
+        }
         when (responseByte) {
             0x80.toByte() -> {
                 updateLogs("Status: Power On")
@@ -384,5 +400,63 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
             e.printStackTrace()
         }
         singleThreadExecutor.shutdown()
+    }
+    data class CoinRequest(
+        val message: String,
+        val ling_num: String,
+        val status: String
+    )
+
+    // ---------------- API ----------------
+    //INBOX TARGET URL:
+    //https://api.webhookinbox.com/i/VbeFfZzP/in/
+    interface ApiService {
+        @POST("i/7ltzMnRK/in/")
+        fun sendCoin(
+            @Body request: CoinRequest
+        ): Call<ResponseBody>
+    }
+
+    // ---------------- SEND API ----------------
+
+    fun sendCoinData(request: CoinRequest) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://api.webhookinbox.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val api = retrofit.create(ApiService::class.java)
+
+
+        api.sendCoin(request).enqueue(object : Callback<ResponseBody> {
+
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+
+                /*   Toast.makeText(
+                       this@MainActivity,
+                       "Success : ${response.code()}",
+                       Toast.LENGTH_LONG
+                   ).show()
+
+                   Log.e("API", "Success")*/
+            }
+
+            override fun onFailure(
+                call: Call<ResponseBody>,
+                t: Throwable
+            ) {
+
+                /* Toast.makeText(
+                     this@MainActivity,
+                     t.message,
+                     Toast.LENGTH_LONG
+                 ).show()
+
+                 Log.e("API", t.message ?: "Unknown Error")*/
+            }
+        })
     }
 }
