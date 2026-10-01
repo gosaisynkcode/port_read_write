@@ -263,7 +263,7 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
                         Thread.sleep(80)
                         mSerialPort?.write(CMD_ENABLE_ALL_CHANNELS)
                         updateLogs("TX >> Enable Channels (0x3E)")
-                        Thread.sleep(150)
+                        Thread.sleep(200)
                     }
 
                     // પોલિંગ કમાન્ડ (માત્ર મશીન તૈયાર થયા પછી જ ચાલુ થશે જેથી ડેટા ઓવરલેપ ન થાય)

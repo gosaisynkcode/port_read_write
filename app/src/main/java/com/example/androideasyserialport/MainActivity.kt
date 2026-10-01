@@ -117,7 +117,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
                             bt_allow.text = "DATA : CMD_STATUS_POLL $count"
                         }
                     }
-                    Thread.sleep(150)
+                    Thread.sleep(200)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
