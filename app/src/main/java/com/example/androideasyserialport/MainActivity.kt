@@ -71,6 +71,12 @@ class MainActivity : androidx.activity.ComponentActivity() {
         val baudRate = 9600 // ICT104U Standard: 9600, Even Parity, 8 Data, 1 Stop
 
         try {
+            try {
+                mSerialPort?.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
             mSerialPort = SerialPort(
                 portPath,
                 baudRate,
@@ -92,6 +98,24 @@ class MainActivity : androidx.activity.ComponentActivity() {
             )
 
             updateLogs("$portPath port open done.")
+
+            // Send reliable startup sequence (Reset -> 2s wait -> Enable) on every launch/re-launch
+            commandExecutor.execute {
+                try {
+                    updateLogs("TX >> Reset (0x30)")
+                    safeWrite(byteArrayOf(0x30.toByte()))
+                    Thread.sleep(2000)
+
+                    safeWrite(CMD_ACK)
+                    Thread.sleep(100)
+
+                    safeWrite(CMD_ENABLE_ALL_CHANNELS)
+                    updateLogs("Sent 0x3E activation command.")
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
             startLivePollingLoop()
 
         } catch (e: Exception) {
@@ -144,12 +168,6 @@ class MainActivity : androidx.activity.ComponentActivity() {
                 sendAck()
             }
 
-            0x81.toByte() -> {
-                updateLogs("Note verification in progress...")
-                isProcessingBill = true // PAUSE POLLING INSTANTLY
-                sendAck()
-            }
-
             0x10.toByte() -> {
                 updateLogs("Bill successfully stacked in cashbox.")
                 isProcessingBill = false // RESUME POLLING
@@ -162,37 +180,36 @@ class MainActivity : androidx.activity.ComponentActivity() {
                 sendAck()
             }
 
-            // Currency Channels
-            0x40.toByte() -> {
-                showDenomination("5 AED"); sendAck()
+            // Currency Channels (Supporting both 0x81-0x88 and 0x40-0x47 firmware variants)
+            0x81.toByte(), 0x40.toByte() -> {
+                showDenomination("5 AED"); isProcessingBill = false; sendAck()
+            }
+            0x82.toByte(), 0x41.toByte() -> {
+                showDenomination("10 AED"); isProcessingBill = false; sendAck()
+            }
+            0x83.toByte(), 0x42.toByte() -> {
+                showDenomination("20 AED"); isProcessingBill = false; sendAck()
+            }
+            0x84.toByte(), 0x43.toByte() -> {
+                showDenomination("50 AED"); isProcessingBill = false; sendAck()
+            }
+            0x85.toByte(), 0x44.toByte() -> {
+                showDenomination("100 AED"); isProcessingBill = false; sendAck()
+            }
+            0x86.toByte(), 0x45.toByte() -> {
+                showDenomination("200 AED"); isProcessingBill = false; sendAck()
+            }
+            0x87.toByte(), 0x46.toByte() -> {
+                showDenomination("500 AED"); isProcessingBill = false; sendAck()
+            }
+            0x88.toByte(), 0x47.toByte() -> {
+                showDenomination("1000 AED"); isProcessingBill = false; sendAck()
             }
 
-            0x41.toByte() -> {
-                showDenomination("10 AED"); sendAck()
-            }
-
-            0x42.toByte() -> {
-                showDenomination("20 AED"); sendAck()
-            }
-
-            0x43.toByte() -> {
-                showDenomination("50 AED"); sendAck()
-            }
-
-            0x44.toByte() -> {
-                showDenomination("100 AED"); sendAck()
-            }
-
-            0x45.toByte() -> {
-                showDenomination("200 AED"); sendAck()
-            }
-
-            0x46.toByte() -> {
-                showDenomination("500 AED"); sendAck()
-            }
-
-            0x47.toByte() -> {
-                showDenomination("1000 AED"); sendAck()
+            0x21.toByte() -> {
+                updateLogs("Note accepted/stacked")
+                isProcessingBill = false
+                sendAck()
             }
 
             0x22.toByte() -> {
