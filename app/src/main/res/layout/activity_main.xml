@@ -19,6 +19,7 @@
             android:orientation="horizontal">
 
             <Button
+                android:layout_weight="1"
                 android:id="@+id/bt_allow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -27,9 +28,10 @@
                 android:text="Allow"
                 android:textSize="@dimen/_10sdp"
                 android:textStyle="bold"
-                tools:ignore="ButtonStyle,HardcodedText,TextSizeCheck,VisualLintSystemUi" />
+                tools:ignore="ButtonStyle,HardcodedText,TextSizeCheck,VisualLintSystemUi,VisualLintButtonSize" />
 
             <Button
+                android:layout_weight="1"
                 android:id="@+id/btnnext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -37,7 +39,7 @@
                 android:text="Next"
                 android:textSize="@dimen/_10sdp"
                 android:textStyle="bold"
-                tools:ignore="ButtonStyle,HardcodedText,TextSizeCheck,VisualLintSystemUi" />
+                tools:ignore="ButtonStyle,HardcodedText,TextSizeCheck,VisualLintSystemUi,VisualLintButtonSize" />
         </LinearLayout>
 
         <TextView
