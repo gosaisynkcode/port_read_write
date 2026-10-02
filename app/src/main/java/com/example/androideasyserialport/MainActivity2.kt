@@ -145,7 +145,6 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import cn.lalaki.SerialPort
-import com.example.androideasyserialport.MainActivity.CoinRequest
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -210,6 +209,7 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
             updateLogs("Root permission allowed.")
         } catch (e: Exception) {
             e.printStackTrace()
+            updateLogs(" 1 Error granting root permission: ${e.message}")
         }
 
         val portPath = "/dev/ttyS4"
@@ -229,7 +229,9 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
                     override fun onData(data: ByteArray) {
                         if (data != null && data.isNotEmpty()) {
                             for (b in data) {
-                                handleIctResponse(b)
+                                runOnUiThread {
+                                    handleIctResponse(b)
+                                }
                             }
                         }
                     }
@@ -277,6 +279,7 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
                     Thread.sleep(130)
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    updateLogs(" 2 Error granting root permission: ${e.message}")
                 }
             }
         }
@@ -368,6 +371,7 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
             mSerialPort?.write(CMD_ACK)
         } catch (e: IOException) {
             e.printStackTrace()
+            updateLogs(" 3 Error granting root permission: ${e.message}")
         }
     }
 
@@ -398,9 +402,12 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
             mSerialPort?.close()
         } catch (e: Exception) {
             e.printStackTrace()
+            updateLogs(" 2 Error granting root permission: ${e.message}")
+
         }
         singleThreadExecutor.shutdown()
     }
+
     data class CoinRequest(
         val message: String,
         val ling_num: String,

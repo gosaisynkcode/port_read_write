@@ -65,6 +65,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
             updateLogs("Root permission allowed.")
         } catch (e: Exception) {
             e.printStackTrace()
+            updateLogs(" 1 Error granting root permission: ${e.message}")
         }
 
         val portPath = "/dev/ttyS4"
@@ -75,6 +76,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
                 mSerialPort?.close()
             } catch (e: Exception) {
                 e.printStackTrace()
+                updateLogs(" 2 Error granting root permission: ${e.message}")
             }
 
             mSerialPort = SerialPort(
@@ -90,7 +92,9 @@ class MainActivity : androidx.activity.ComponentActivity() {
                     override fun onData(data: ByteArray) {
                         if (data != null && data.isNotEmpty()) {
                             for (b in data) {
-                                handleIctResponse(b)
+                                runOnUiThread {
+                                    handleIctResponse(b)
+                                }
                             }
                         }
                     }
@@ -113,6 +117,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
                     updateLogs("Sent 0x3E activation command.")
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    updateLogs(" 3 Error granting root permission: ${e.message}")
                 }
             }
 
@@ -144,6 +149,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
                     Thread.sleep(200)
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    updateLogs(" 4 Error granting root permission: ${e.message}")
                 }
             }
         }
@@ -247,6 +253,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
                 updateLogs("Sent 0x3E activation command.")
             } catch (e: Exception) {
                 e.printStackTrace()
+                updateLogs(" 5 Error granting root permission: ${e.message}")
             }
         }
     }
@@ -261,6 +268,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
                 mSerialPort?.write(data)
             } catch (e: IOException) {
                 e.printStackTrace()
+                updateLogs(" 6 Error granting root permission: ${e.message}")
             }
         }
     }
