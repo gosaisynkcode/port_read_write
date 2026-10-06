@@ -469,7 +469,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 }*/
 
 import android.util.Log
-import com.example.androideasyserialport.MainActivity.CoinRequest
+
 
 
 class MainActivity2 : androidx.activity.ComponentActivity() {
