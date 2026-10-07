@@ -12,7 +12,8 @@
     android:layout_margin="@dimen/_5sdp"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:ignore="MissingConstraints">
     <Button
         android:layout_weight="1"
         android:id="@+id/bt_allow"
@@ -22,7 +23,7 @@
         android:padding="@dimen/_5sdp"
         android:textSize="@dimen/_10sdp"
         android:textStyle="bold"
-        tools:ignore="HardcodedText,MissingConstraints,VisualLintButtonSize,VisualLintSystemUi,TextSizeCheck,TouchTargetSizeCheck"
+        tools:ignore="ButtonStyle,HardcodedText,MissingConstraints,TextSizeCheck,TouchTargetSizeCheck,VisualLintButtonSize,VisualLintSystemUi"
         tools:layout_editor_absoluteX="9dp"
         tools:layout_editor_absoluteY="16dp" />
     <Button
@@ -35,7 +36,7 @@
         android:textSize="@dimen/_10sdp"
         android:padding="@dimen/_5sdp"
         android:textStyle="bold"
-        tools:ignore="HardcodedText,MissingConstraints,VisualLintButtonSize,VisualLintSystemUi,TextSizeCheck,TouchTargetSizeCheck"
+        tools:ignore="ButtonStyle,HardcodedText,MissingConstraints,TextSizeCheck,TouchTargetSizeCheck,VisualLintButtonSize,VisualLintSystemUi"
         tools:layout_editor_absoluteX="9dp"
         tools:layout_editor_absoluteY="16dp" />
 </LinearLayout>
