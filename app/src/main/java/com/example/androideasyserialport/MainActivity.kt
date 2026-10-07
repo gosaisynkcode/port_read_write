@@ -3,7 +3,6 @@ package com.example.androideasyserialport
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import cn.lalaki.SerialPort
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -51,6 +50,8 @@ class MainActivity : androidx.activity.ComponentActivity() {
         bt_allow.setOnClickListener {
             initLalakiSerial()
         }
+        val bt_back: Button = findViewById(R.id.bt_back)
+        bt_back.setOnClickListener { finish() }
     }
 
     private fun initLalakiSerial() {
@@ -293,9 +294,9 @@ class MainActivity : androidx.activity.ComponentActivity() {
     }
 
     private fun showDenomination(amount: String) {
-       /* runOnUiThread {
-            Toast.makeText(this, "Payment done : $amount", Toast.LENGTH_LONG).show()
-        }*/
+        /* runOnUiThread {
+             Toast.makeText(this, "Payment done : $amount", Toast.LENGTH_LONG).show()
+         }*/
         updateLogs("Payment done : $amount")
     }
 

@@ -7,18 +7,38 @@
     android:layout_height="match_parent"
     android:padding="@dimen/_5sdp"
     tools:context=".MainActivity">
-
+<LinearLayout
+    android:id="@+id/lv_layout"
+    android:layout_margin="@dimen/_5sdp"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
     <Button
+        android:layout_weight="1"
         android:id="@+id/bt_allow"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_30sdp"
+        android:layout_height="wrap_content"
         android:text="Allow"
+        android:padding="@dimen/_5sdp"
         android:textSize="@dimen/_10sdp"
         android:textStyle="bold"
-        android:layout_marginTop="@dimen/_5sdp"
         tools:ignore="HardcodedText,MissingConstraints,VisualLintButtonSize,VisualLintSystemUi,TextSizeCheck,TouchTargetSizeCheck"
-        tools:layout_editor_absoluteX="6dp"
-        tools:layout_editor_absoluteY="6dp" />
+        tools:layout_editor_absoluteX="9dp"
+        tools:layout_editor_absoluteY="16dp" />
+    <Button
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_weight="1"
+        android:id="@+id/bt_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:textSize="@dimen/_10sdp"
+        android:padding="@dimen/_5sdp"
+        android:textStyle="bold"
+        tools:ignore="HardcodedText,MissingConstraints,VisualLintButtonSize,VisualLintSystemUi,TextSizeCheck,TouchTargetSizeCheck"
+        tools:layout_editor_absoluteX="9dp"
+        tools:layout_editor_absoluteY="16dp" />
+</LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -26,7 +46,7 @@
         android:layout_weight="1"
         android:background="#F0F0F0"
         android:padding="@dimen/_4sdp"
-        app:layout_constraintTop_toBottomOf="@+id/bt_allow"
+        app:layout_constraintTop_toBottomOf="@+id/lv_layout"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="6dp">
 
