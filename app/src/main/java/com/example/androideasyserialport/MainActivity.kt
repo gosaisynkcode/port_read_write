@@ -293,9 +293,9 @@ class MainActivity : androidx.activity.ComponentActivity() {
     }
 
     private fun showDenomination(amount: String) {
-        runOnUiThread {
+       /* runOnUiThread {
             Toast.makeText(this, "Payment done : $amount", Toast.LENGTH_LONG).show()
-        }
+        }*/
         updateLogs("Payment done : $amount")
     }
 
