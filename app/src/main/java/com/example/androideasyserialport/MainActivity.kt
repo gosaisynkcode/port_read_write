@@ -1,7 +1,6 @@
 package com.example.androideasyserialport
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -190,24 +189,31 @@ class MainActivity : androidx.activity.ComponentActivity() {
             0x81.toByte(), 0x40.toByte() -> {
                 showDenomination("5 AED"); isProcessingBill = false; sendAck()
             }
+
             0x82.toByte(), 0x41.toByte() -> {
                 showDenomination("10 AED"); isProcessingBill = false; sendAck()
             }
+
             0x83.toByte(), 0x42.toByte() -> {
                 showDenomination("20 AED"); isProcessingBill = false; sendAck()
             }
+
             0x84.toByte(), 0x43.toByte() -> {
                 showDenomination("50 AED"); isProcessingBill = false; sendAck()
             }
+
             0x85.toByte(), 0x44.toByte() -> {
                 showDenomination("100 AED"); isProcessingBill = false; sendAck()
             }
+
             0x86.toByte(), 0x45.toByte() -> {
                 showDenomination("200 AED"); isProcessingBill = false; sendAck()
             }
+
             0x87.toByte(), 0x46.toByte() -> {
                 showDenomination("500 AED"); isProcessingBill = false; sendAck()
             }
+
             0x88.toByte(), 0x47.toByte() -> {
                 showDenomination("1000 AED"); isProcessingBill = false; sendAck()
             }
@@ -339,13 +345,13 @@ class MainActivity : androidx.activity.ComponentActivity() {
                 response: Response<ResponseBody>
             ) {
 
-               /* Toast.makeText(
-                    this@MainActivity,
-                    "Success : ${response.code()}",
-                    Toast.LENGTH_LONG
-                ).show()
+                /* Toast.makeText(
+                     this@MainActivity,
+                     "Success : ${response.code()}",
+                     Toast.LENGTH_LONG
+                 ).show()
 
-                Log.e("API", "Success")*/
+                 Log.e("API", "Success")*/
             }
 
             override fun onFailure(

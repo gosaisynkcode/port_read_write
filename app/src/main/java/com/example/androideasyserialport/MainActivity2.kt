@@ -139,25 +139,6 @@ package com.example.androideasyserialport
     }
 }*/
 
-import android.content.Intent
-import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
-import cn.lalaki.SerialPort
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.POST
-import java.io.DataOutputStream
-import java.io.IOException
-import java.util.concurrent.Executors
-import java.util.concurrent.atomic.AtomicBoolean
-
 /*class MainActivity2 : androidx.activity.ComponentActivity() {
     private var mSerialPort: SerialPort? = null
 
@@ -468,8 +449,24 @@ import java.util.concurrent.atomic.AtomicBoolean
     }
 }*/
 
+import android.content.Intent
+import android.os.Bundle
 import android.util.Log
-
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
+import cn.lalaki.SerialPort
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
+import retrofit2.http.POST
+import java.io.DataOutputStream
+import java.io.IOException
+import java.util.concurrent.Executors
 
 
 class MainActivity2 : androidx.activity.ComponentActivity() {
@@ -508,7 +505,7 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
 
         bt_allow = findViewById(R.id.bt_allow)
         tvLogs = findViewById(R.id.tvLogs)
-        btnnext=findViewById(R.id.btnnext)
+        btnnext = findViewById(R.id.btnnext)
 
         btnnext.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
