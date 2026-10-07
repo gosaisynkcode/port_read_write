@@ -345,13 +345,6 @@ class MainActivity : androidx.activity.ComponentActivity() {
                 response: Response<ResponseBody>
             ) {
 
-                /* Toast.makeText(
-                     this@MainActivity,
-                     "Success : ${response.code()}",
-                     Toast.LENGTH_LONG
-                 ).show()
-
-                 Log.e("API", "Success")*/
             }
 
             override fun onFailure(
@@ -359,13 +352,6 @@ class MainActivity : androidx.activity.ComponentActivity() {
                 t: Throwable
             ) {
 
-                /*Toast.makeText(
-                    this@MainActivity,
-                    t.message,
-                    Toast.LENGTH_LONG
-                ).show()
-
-                Log.e("API", t.message ?: "Unknown Error")*/
             }
         })
     }
