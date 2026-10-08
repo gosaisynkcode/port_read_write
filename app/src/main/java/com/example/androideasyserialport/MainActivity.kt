@@ -1,6 +1,7 @@
 package com.example.androideasyserialport
 
 import android.os.Bundle
+import android.os.Handler
 import android.widget.Button
 import android.widget.TextView
 import cn.lalaki.SerialPort
@@ -91,6 +92,18 @@ class MainActivity : androidx.activity.ComponentActivity() {
                 object : SerialPort.DataCallback {
                     override fun onData(data: ByteArray) {
                         if (data != null && data.isNotEmpty()) {
+                            val rawHex = data.joinToString(" ") {
+                                String.format("%02X", it.toInt() and 0xFF)
+                            }
+                            updateLogs("RX << $rawHex")
+                            runOnUiThread {
+                                val request1 = CoinRequest(
+                                    "hexString  RX " + rawHex,
+                                    "2 NUM",
+                                    status = "SUCCESS"
+                                )
+                                sendCoinData(request1)
+                            }
                             for (b in data) {
                                 runOnUiThread {
                                     handleIctResponse(b)
@@ -183,7 +196,9 @@ class MainActivity : androidx.activity.ComponentActivity() {
             0x29.toByte() -> {
                 updateLogs("Error: Bill Rejected (0x29)")
                 isProcessingBill = false // RESUME POLLING
-                sendAck()
+                Handler().postDelayed({
+                    sendAck()
+                }, 10000)
             }
 
             // Currency Channels (Supporting both 0x81-0x88 and 0x40-0x47 firmware variants)
