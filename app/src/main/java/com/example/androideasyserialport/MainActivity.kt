@@ -299,12 +299,15 @@ class MainActivity : androidx.activity.ComponentActivity() {
         runOnUiThread {
             val currentText = tvLogs.text.toString()
             val lines = currentText.split("\n")
-            val newText = if (lines.size > 20) {
-                lines.drop(1).joinToString("\n") + "\n $message"
+            val newText = if (lines.size > 100) {
+                lines.drop(lines.size - 100).joinToString("\n") + "\n $message"
             } else {
                 "$currentText\n $message"
             }
             tvLogs.text = newText
+            findViewById<android.widget.ScrollView>(R.id.scrollView)?.post {
+                findViewById<android.widget.ScrollView>(R.id.scrollView)?.fullScroll(android.widget.ScrollView.FOCUS_DOWN)
+            }
         }
     }
 

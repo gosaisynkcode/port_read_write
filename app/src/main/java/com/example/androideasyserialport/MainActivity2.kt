@@ -1220,33 +1220,17 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
     private fun updateLogs(message: String) {
 
         runOnUiThread {
-
-            val current =
-                tvLogs.text.toString()
-
-            val lines =
-                current.split("\n")
-
-            val newText =
-                if (lines.size > 30) {
-
-                    lines.drop(1)
-                        .joinToString("\n") +
-                            "\n" + message
-
-                } else {
-
-                    if (current.isEmpty()) {
-
-                        message
-
-                    } else {
-
-                        "$current\n$message"
-                    }
-                }
-
+            val currentText = tvLogs.text.toString()
+            val lines = currentText.split("\n")
+            val newText = if (lines.size > 100) {
+                lines.drop(lines.size - 100).joinToString("\n") + "\n $message"
+            } else {
+                "$currentText\n $message"
+            }
             tvLogs.text = newText
+            findViewById<android.widget.ScrollView>(R.id.scrollView)?.post {
+                findViewById<android.widget.ScrollView>(R.id.scrollView)?.fullScroll(android.widget.ScrollView.FOCUS_DOWN)
+            }
         }
     }
 
