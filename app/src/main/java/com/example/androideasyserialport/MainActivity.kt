@@ -188,9 +188,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
             0x29.toByte() -> {
                 updateLogs("Error: Bill Rejected (0x29)")
                 isProcessingBill = false // RESUME POLLING
-                Handler().postDelayed({
-                    sendAck()
-                }, 10000)
+                sendAck()
             }
 
             // Currency Channels (Supporting both 0x81-0x88 and 0x40-0x47 firmware variants)
