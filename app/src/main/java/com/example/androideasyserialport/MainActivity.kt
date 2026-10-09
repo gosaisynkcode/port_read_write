@@ -96,14 +96,6 @@ class MainActivity : androidx.activity.ComponentActivity() {
                                 String.format("%02X", it.toInt() and 0xFF)
                             }
                             updateLogs("RX << $rawHex")
-                            runOnUiThread {
-                                val request1 = CoinRequest(
-                                    "hexString  RX " + rawHex,
-                                    "2 NUM",
-                                    status = "SUCCESS"
-                                )
-                                sendCoinData(request1)
-                            }
                             for (b in data) {
                                 runOnUiThread {
                                     handleIctResponse(b)
