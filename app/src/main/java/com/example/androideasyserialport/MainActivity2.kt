@@ -449,6 +449,7 @@ package com.example.androideasyserialport
     }
 }*/
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -660,6 +661,7 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
     // POLLING
     // ============================================================
 
+    @SuppressLint("SetTextI18n")
     private fun startLivePollingLoop() {
 
         if (isRunning) return
