@@ -837,110 +837,6 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
             // DENOMINATION RESPONSES
             // ----------------------------------------------------
 
-            0x81 -> {
-
-                updateLogs(
-                    "CHANNEL RESPONSE: 0x81"
-                )
-
-                showDenomination("5 AED")
-
-                isProcessingBill = false
-
-                sendAck()
-            }
-
-            0x82 -> {
-
-                updateLogs(
-                    "CHANNEL RESPONSE: 0x82"
-                )
-
-                showDenomination("10 AED")
-
-                isProcessingBill = false
-
-                sendAck()
-            }
-
-            0x83 -> {
-
-                updateLogs(
-                    "CHANNEL RESPONSE: 0x83"
-                )
-
-                showDenomination("20 AED")
-
-                isProcessingBill = false
-
-                sendAck()
-            }
-
-            0x84 -> {
-
-                updateLogs(
-                    "CHANNEL RESPONSE: 0x84"
-                )
-
-                showDenomination("50 AED")
-
-                isProcessingBill = false
-
-                sendAck()
-            }
-
-            0x85 -> {
-
-                updateLogs(
-                    "CHANNEL RESPONSE: 0x85"
-                )
-
-                showDenomination("100 AED")
-
-                isProcessingBill = false
-
-                sendAck()
-            }
-
-            0x86 -> {
-
-                updateLogs(
-                    "CHANNEL RESPONSE: 0x86"
-                )
-
-                showDenomination("200 AED")
-
-                isProcessingBill = false
-
-                sendAck()
-            }
-
-            0x87 -> {
-
-                updateLogs(
-                    "CHANNEL RESPONSE: 0x87"
-                )
-
-                showDenomination("500 AED")
-
-                isProcessingBill = false
-
-                sendAck()
-            }
-
-            0x88 -> {
-
-                updateLogs(
-                    "CHANNEL RESPONSE: 0x88"
-                )
-
-                showDenomination("1000 AED")
-
-                isProcessingBill = false
-
-                sendAck()
-            }
-
             // ----------------------------------------------------
             // ALTERNATE CHANNEL RESPONSES
             // ----------------------------------------------------
@@ -1066,6 +962,109 @@ class MainActivity2 : androidx.activity.ComponentActivity() {
                 )
             }
 
+            0x81 -> {
+
+                updateLogs(
+                    "CHANNEL RESPONSE: 0x81"
+                )
+
+                showDenomination("5 AED")
+
+                isProcessingBill = false
+
+                sendAck()
+            }
+
+            0x82 -> {
+
+                updateLogs(
+                    "CHANNEL RESPONSE: 0x82"
+                )
+
+                showDenomination("10 AED")
+
+                isProcessingBill = false
+
+                sendAck()
+            }
+
+            0x83 -> {
+
+                updateLogs(
+                    "CHANNEL RESPONSE: 0x83"
+                )
+
+                showDenomination("20 AED")
+
+                isProcessingBill = false
+
+                sendAck()
+            }
+
+            0x84 -> {
+
+                updateLogs(
+                    "CHANNEL RESPONSE: 0x84"
+                )
+
+                showDenomination("50 AED")
+
+                isProcessingBill = false
+
+                sendAck()
+            }
+
+            0x85 -> {
+
+                updateLogs(
+                    "CHANNEL RESPONSE: 0x85"
+                )
+
+                showDenomination("100 AED")
+
+                isProcessingBill = false
+
+                sendAck()
+            }
+
+            0x86 -> {
+
+                updateLogs(
+                    "CHANNEL RESPONSE: 0x86"
+                )
+
+                showDenomination("200 AED")
+
+                isProcessingBill = false
+
+                sendAck()
+            }
+
+            0x87 -> {
+
+                updateLogs(
+                    "CHANNEL RESPONSE: 0x87"
+                )
+
+                showDenomination("500 AED")
+
+                isProcessingBill = false
+
+                sendAck()
+            }
+
+            0x88 -> {
+
+                updateLogs(
+                    "CHANNEL RESPONSE: 0x88"
+                )
+
+                showDenomination("1000 AED")
+
+                isProcessingBill = false
+
+                sendAck()
+            }
             // ----------------------------------------------------
             // UNKNOWN
             // ----------------------------------------------------
