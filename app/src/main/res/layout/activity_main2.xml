@@ -21,9 +21,8 @@
         <Button
             android:id="@+id/bt_allow"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_35sdp"
             android:layout_weight="1"
-            android:padding="@dimen/_5sdp"
             android:text="Allow"
             android:textSize="@dimen/_10sdp"
             android:textStyle="bold"
@@ -32,7 +31,7 @@
         <Button
             android:id="@+id/bt_back"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_35sdp"
             android:layout_marginStart="@dimen/_5sdp"
             android:layout_weight="1"
             android:padding="@dimen/_5sdp"
