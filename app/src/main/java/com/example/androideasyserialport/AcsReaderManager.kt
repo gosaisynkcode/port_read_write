@@ -14,6 +14,7 @@ import android.hardware.usb.UsbManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import java.io.DataOutputStream
 import java.lang.reflect.Constructor
 import java.lang.reflect.Method
 import java.util.concurrent.Executors
@@ -204,7 +205,26 @@ class AcsReaderManager(private val context: Context, private val listener: Liste
         executor.shutdown()
     }
 
+    private fun grantRootUsbPermissions() {
+        try {
+            val process = Runtime.getRuntime().exec("su")
+            val os = DataOutputStream(process.outputStream)
+            os.writeBytes("chmod -R 777 /dev/bus/usb/\n")
+            os.writeBytes("chmod 777 /dev/bus/usb/*/*\n")
+            os.writeBytes("exit\n")
+            os.flush()
+            process.waitFor()
+            log("Root permissions applied: chmod 777 /dev/bus/usb/")
+        } catch (e: Exception) {
+            // Ignore if non-root environment
+        }
+    }
+
     fun scanAndConnect() {
+        executor.execute {
+            grantRootUsbPermissions()
+        }
+
         val deviceList = usbManager.deviceList
         log("Scanning USB devices (${deviceList.size} found)...")
 
@@ -280,7 +300,11 @@ class AcsReaderManager(private val context: Context, private val listener: Liste
     }
 
     private fun initNativeCcidConnection(device: UsbDevice) {
-        val conn = usbManager.openDevice(device)
+        var conn = usbManager.openDevice(device)
+        if (conn == null) {
+            grantRootUsbPermissions()
+            conn = usbManager.openDevice(device)
+        }
         if (conn == null) {
             log("Failed to open USB device connection.")
             return

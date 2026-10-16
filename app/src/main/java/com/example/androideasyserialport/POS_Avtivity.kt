@@ -89,16 +89,12 @@ class POS_Avtivity : AppCompatActivity(), AcsReaderManager.Listener {
     // --- AcsReaderManager.Listener Callbacks ---
 
     override fun onReaderConnected(deviceName: String, vidHex: String, pidHex: String) {
-        binding.tvReaderStatus.text = "Reader: Connected ($deviceName)"
-        binding.tvReaderInfo.text = "VID: 0x$vidHex | PID: 0x$pidHex | Status: READY"
-        binding.statusIndicator.backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#38A169"))
+        binding.tvReaderStatus.text = "POS: Connected ($deviceName)"+"\n"+"VID: 0x$vidHex | PID: 0x$pidHex | Status: READY"
         updateLogs("ACS ACR1252U Reader Connected & Powered ON!")
     }
 
     override fun onReaderDisconnected() {
-        binding.tvReaderStatus.text = "Reader: Disconnected"
-        binding.tvReaderInfo.text = "ACS ACR1252U (VID: 072F, PID: 223E)"
-        binding.statusIndicator.backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#E53E3E"))
+        binding.tvReaderStatus.text = "POS: Disconnect"+"\n"+"ACS ACR1252U"
         binding.tvCardUid.text = "CARD UID: --"
         binding.tvCardAtr.text = "ATR / ATS: --"
         binding.tvCardType.text = "Type: Waiting for card scan..."
