@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ACS ACR1252U NFC Reader (Vendor ID: 0x072F / 1839, Product ID: 0x223E / 8766) -->
+    <usb-device vendor-id="1839" product-id="8766" />
+    <!-- Generic ACS Smart Card / NFC Readers (Vendor ID: 0x072F / 1839) -->
+    <usb-device vendor-id="1839" />
+</resources>
