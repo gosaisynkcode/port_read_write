@@ -12,10 +12,11 @@
 
     <!-- Header Title -->
     <LinearLayout
+        android:weightSum="4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_10sdp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="@dimen/_10sdp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -23,7 +24,7 @@
         <Button
             android:id="@+id/btnConnect"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_30sdp"
             android:layout_weight="1"
             android:paddingHorizontal="16dp"
             android:text="Connect"
@@ -33,7 +34,7 @@
         <Button
             android:id="@+id/btnReadUid"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_30sdp"
             android:layout_marginStart="@dimen/_5sdp"
             android:layout_marginEnd="4dp"
             android:layout_weight="1"
@@ -44,7 +45,7 @@
         <Button
             android:id="@+id/btnReadMifare"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_30sdp"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             android:layout_weight="1"
@@ -54,14 +55,14 @@
 
         <Button
             android:id="@+id/btnClearLogs"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+            android:layout_height="@dimen/_30sdp"
             android:layout_weight="1"
             android:text="Clear Logs"
-            android:textSize="12sp"
-            android:visibility="gone"
+            android:textSize="@dimen/_8sdp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:visibility="visible"
             tools:ignore="HardcodedText" />
     </LinearLayout>
     <!-- Card Data Display Card -->
