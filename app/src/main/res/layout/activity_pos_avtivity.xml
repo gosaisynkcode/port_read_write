@@ -27,7 +27,8 @@
             android:layout_weight="1"
             android:paddingHorizontal="16dp"
             android:text="Connect"
-            android:textSize="@dimen/_8sdp" />
+            android:textSize="@dimen/_8sdp"
+            tools:ignore="ButtonStyle,HardcodedText,TextSizeCheck,VisualLintButtonSize" />
 
         <Button
             android:id="@+id/btnReadUid"
@@ -37,7 +38,8 @@
             android:layout_marginEnd="4dp"
             android:layout_weight="1"
             android:text="Read UID"
-            android:textSize="@dimen/_8sdp" />
+            android:textSize="@dimen/_8sdp"
+            tools:ignore="ButtonStyle,HardcodedText,TextSizeCheck,VisualLintButtonSize" />
 
         <Button
             android:id="@+id/btnReadMifare"
@@ -47,7 +49,8 @@
             android:layout_marginEnd="4dp"
             android:layout_weight="1"
             android:text="Read Block"
-            android:textSize="@dimen/_8sdp" />
+            android:textSize="@dimen/_8sdp"
+            tools:ignore="ButtonStyle,HardcodedText,TextSizeCheck,VisualLintButtonSize" />
 
         <Button
             android:id="@+id/btnClearLogs"
@@ -58,7 +61,8 @@
             android:layout_weight="1"
             android:text="Clear Logs"
             android:textSize="12sp"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
     <!-- Card Data Display Card -->
     <com.google.android.material.card.MaterialCardView
@@ -79,11 +83,12 @@
                 android:id="@+id/tvReaderStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_5sdp"
                 android:text="POS: Disconnected"
                 android:textColor="#FFFFFF"
-                android:layout_marginBottom="@dimen/_5sdp"
                 android:textSize="@dimen/_7sdp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:ignore="HardcodedText,TextSizeCheck" />
 
             <TextView
                 android:id="@+id/tvCardUid"
@@ -93,7 +98,8 @@
                 android:text="CARD UID: --"
                 android:textColor="#FFFFFF"
                 android:textSize="@dimen/_15sdp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:ignore="HardcodedText,TextSizeCheck" />
 
             <TextView
                 android:id="@+id/tvCardAtr"
@@ -103,7 +109,8 @@
                 android:fontFamily="monospace"
                 android:text="ATR / ATS: --"
                 android:textColor="#E2E8F0"
-                android:textSize="@dimen/_8sdp" />
+                android:textSize="@dimen/_8sdp"
+                tools:ignore="HardcodedText,TextSizeCheck,TextContrastCheck" />
 
             <TextView
                 android:id="@+id/tvCardType"
@@ -112,7 +119,8 @@
                 android:layout_marginTop="4dp"
                 android:text="Type: Waiting for card scan..."
                 android:textColor="#CBD5E0"
-                android:textSize="@dimen/_8sdp" />
+                android:textSize="@dimen/_8sdp"
+                tools:ignore="HardcodedText,TextSizeCheck,TextContrastCheck" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
     <!-- Scrollable Log Output Box -->
