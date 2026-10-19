@@ -61,7 +61,11 @@ class AcsReaderManager(private val context: Context, private val listener: Liste
             return cmd
         }
 
-        fun apduAuthBlock(blockNumber: Byte, keyType: Byte = 0x60 /* Key A */, keyNumber: Byte = 0x00): ByteArray {
+        fun apduAuthBlock(
+            blockNumber: Byte,
+            keyType: Byte = 0x60 /* Key A */,
+            keyNumber: Byte = 0x00
+        ): ByteArray {
             // FF 86 00 00 05 01 00 [BlockNo] [KeyType] [KeyNum]
             return byteArrayOf(
                 0xFF.toByte(), 0x86.toByte(), 0x00, 0x00, 0x05,
@@ -126,13 +130,18 @@ class AcsReaderManager(private val context: Context, private val listener: Liste
             when (intent?.action) {
                 ACTION_USB_PERMISSION -> {
                     synchronized(this) {
-                        val device: UsbDevice? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            intent.getParcelableExtra(UsbManager.EXTRA_DEVICE, UsbDevice::class.java)
-                        } else {
-                            @Suppress("DEPRECATION")
-                            intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
-                        }
-                        val granted = intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)
+                        val device: UsbDevice? =
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                intent.getParcelableExtra(
+                                    UsbManager.EXTRA_DEVICE,
+                                    UsbDevice::class.java
+                                )
+                            } else {
+                                @Suppress("DEPRECATION")
+                                intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
+                            }
+                        val granted =
+                            intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)
                         if (granted && device != null) {
                             log("USB permission granted for ${device.deviceName}")
                             connectToDevice(device)
@@ -141,10 +150,12 @@ class AcsReaderManager(private val context: Context, private val listener: Liste
                         }
                     }
                 }
+
                 UsbManager.ACTION_USB_DEVICE_ATTACHED -> {
                     log("USB device attached")
                     scanAndConnect()
                 }
+
                 UsbManager.ACTION_USB_DEVICE_DETACHED -> {
                     log("USB device detached")
                     disconnect()
@@ -231,7 +242,14 @@ class AcsReaderManager(private val context: Context, private val listener: Liste
         var acsDevice: UsbDevice? = null
 
         for (device in deviceList.values) {
-            log("Device: ${device.deviceName} | VendorID: 0x${String.format("%04X", device.vendorId)} | ProductID: 0x${String.format("%04X", device.productId)}")
+            log(
+                "Device: ${device.deviceName} | VendorID: 0x${
+                    String.format(
+                        "%04X",
+                        device.vendorId
+                    )
+                } | ProductID: 0x${String.format("%04X", device.productId)}"
+            )
             if (isAcsDevice(device)) {
                 acsDevice = device
                 break
@@ -244,7 +262,8 @@ class AcsReaderManager(private val context: Context, private val listener: Liste
                 connectToDevice(acsDevice)
             } else {
                 log("Requesting USB permission for ${acsDevice.deviceName}...")
-                val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0
+                val flags =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0
                 val permissionIntent = PendingIntent.getBroadcast(
                     context, 0, Intent(ACTION_USB_PERMISSION), flags
                 )
@@ -293,7 +312,7 @@ class AcsReaderManager(private val context: Context, private val listener: Liste
         }
 
         mainHandler.post {
-            listener.onReaderConnected(device.deviceName ?: "ACR1252U", vidHex, pidHex)
+            listener.onReaderConnected(device.deviceName, vidHex, pidHex)
         }
 
         startCardPollingLoop()
@@ -399,7 +418,7 @@ class AcsReaderManager(private val context: Context, private val listener: Liste
         return readCardUidNative(10)
     }
 
-    private fun readCardUidNative(seq: Int): String? {
+    private fun readCardUidNative(seq: Int): String {
         if (isAcsSdkAvailable && acsReaderInstance != null) {
             try {
                 // slot 0
@@ -482,7 +501,8 @@ class AcsReaderManager(private val context: Context, private val listener: Liste
                 val retApdu = conn.bulkTransfer(epIn, apduRespBuf, apduRespBuf.size, 1000)
 
                 if (retApdu >= 12) {
-                    val dataLen = (apduRespBuf[1].toInt() and 0xFF) or ((apduRespBuf[2].toInt() and 0xFF) shl 8)
+                    val dataLen =
+                        (apduRespBuf[1].toInt() and 0xFF) or ((apduRespBuf[2].toInt() and 0xFF) shl 8)
                     if (dataLen >= 2) {
                         val sw1 = apduRespBuf[10 + dataLen - 2].toInt() and 0xFF
                         val sw2 = apduRespBuf[10 + dataLen - 1].toInt() and 0xFF
@@ -532,7 +552,8 @@ class AcsReaderManager(private val context: Context, private val listener: Liste
                 val retLen = conn.bulkTransfer(epIn, responseBuf, responseBuf.size, 1000)
 
                 if (retLen >= 10) {
-                    val dataLen = (responseBuf[1].toInt() and 0xFF) or ((responseBuf[2].toInt() and 0xFF) shl 8)
+                    val dataLen =
+                        (responseBuf[1].toInt() and 0xFF) or ((responseBuf[2].toInt() and 0xFF) shl 8)
                     if (dataLen > 0) {
                         val payload = ByteArray(dataLen)
                         System.arraycopy(responseBuf, 10, payload, 0, dataLen)
