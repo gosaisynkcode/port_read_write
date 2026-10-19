@@ -3,7 +3,6 @@ package com.example.androideasyserialport
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.widget.ScrollView
 import android.widget.Toast
