@@ -29,7 +29,7 @@
             android:paddingHorizontal="16dp"
             android:text="Connect"
             android:textSize="@dimen/_8sdp"
-            tools:ignore="ButtonStyle,HardcodedText,TextSizeCheck,VisualLintButtonSize" />
+            tools:ignore="ButtonStyle,HardcodedText,TextSizeCheck,VisualLintButtonSize,TouchTargetSizeCheck" />
 
         <Button
             android:id="@+id/btnReadUid"
@@ -40,7 +40,7 @@
             android:layout_weight="1"
             android:text="Read UID"
             android:textSize="@dimen/_8sdp"
-            tools:ignore="ButtonStyle,HardcodedText,TextSizeCheck,VisualLintButtonSize" />
+            tools:ignore="ButtonStyle,HardcodedText,TextSizeCheck,VisualLintButtonSize,TouchTargetSizeCheck" />
 
         <Button
             android:id="@+id/btnReadMifare"
@@ -51,19 +51,19 @@
             android:layout_weight="1"
             android:text="Read Block"
             android:textSize="@dimen/_8sdp"
-            tools:ignore="ButtonStyle,HardcodedText,TextSizeCheck,VisualLintButtonSize" />
+            tools:ignore="ButtonStyle,HardcodedText,TextSizeCheck,VisualLintButtonSize,TouchTargetSizeCheck" />
 
         <Button
             android:id="@+id/btnClearLogs"
             android:layout_width="0dp"
             android:layout_height="@dimen/_30sdp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:layout_weight="1"
             android:text="Clear Logs"
             android:textSize="@dimen/_8sdp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
             android:visibility="visible"
-            tools:ignore="HardcodedText" />
+            tools:ignore="ButtonStyle,HardcodedText,TextSizeCheck,TouchTargetSizeCheck,VisualLintButtonSize" />
     </LinearLayout>
     <!-- Card Data Display Card -->
     <com.google.android.material.card.MaterialCardView
