@@ -178,7 +178,7 @@ class POS_Avtivity : AppCompatActivity(), AcsReaderManager.Listener {
     // ---------------- SEND API ----------------
 
     fun sendCoinData(request: CoinRequest) {
-        val retrofit = Retrofit.Builder()
+       /* val retrofit = Retrofit.Builder()
             .baseUrl("https://api.webhookinbox.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -201,6 +201,6 @@ class POS_Avtivity : AppCompatActivity(), AcsReaderManager.Listener {
 
 
             }
-        })
+        })*/
     }
 }
