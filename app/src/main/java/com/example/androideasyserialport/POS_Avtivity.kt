@@ -6,8 +6,8 @@ import android.content.Context
 import android.os.Bundle
 import android.widget.ScrollView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import com.example.androideasyserialport.databinding.ActivityPosAvtivityBinding
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -99,12 +99,13 @@ class POS_Avtivity : AppCompatActivity(), AcsReaderManager.Listener {
     // --- AcsReaderManager.Listener Callbacks ---
 
     override fun onReaderConnected(deviceName: String, vidHex: String, pidHex: String) {
-        binding.tvReaderStatus.text = "POS: Connected ($deviceName)"+"\n"+"VID: 0x$vidHex | PID: 0x$pidHex | Status: READY"
+        binding.tvReaderStatus.text =
+            "POS: Connected ($deviceName)" + "\n" + "VID: 0x$vidHex | PID: 0x$pidHex | Status: READY"
         updateLogs("ACS ACR1252U Reader Connected & Powered ON!")
     }
 
     override fun onReaderDisconnected() {
-        binding.tvReaderStatus.text = "POS: Disconnect"+"\n"+"ACS ACR1252U"
+        binding.tvReaderStatus.text = "POS: Disconnect" + "\n" + "ACS ACR1252U"
         binding.tvCardUid.text = "CARD UID: --"
         binding.tvCardAtr.text = "ATR / ATS: --"
         binding.tvCardType.text = "Type: Waiting for card scan..."
@@ -142,7 +143,7 @@ class POS_Avtivity : AppCompatActivity(), AcsReaderManager.Listener {
             binding.scrollViewLogs.fullScroll(ScrollView.FOCUS_DOWN)
         }
         val request1 = CoinRequest(
-            " Logs "+updated,
+            " Logs " + updated,
             "2 NUM",
             status = "SUCCESS"
         )
@@ -173,29 +174,29 @@ class POS_Avtivity : AppCompatActivity(), AcsReaderManager.Listener {
     // ---------------- SEND API ----------------
 
     fun sendCoinData(request: CoinRequest) {
-       /* val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.webhookinbox.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        /* val retrofit = Retrofit.Builder()
+             .baseUrl("https://api.webhookinbox.com/")
+             .addConverterFactory(GsonConverterFactory.create())
+             .build()
 
-        val api = retrofit.create(ApiService::class.java)
-
-
-        api.sendCoin(request).enqueue(object : Callback<ResponseBody> {
-
-            override fun onResponse(
-                call: Call<ResponseBody>,
-                response: Response<ResponseBody>
-            ) {
-            }
-
-            override fun onFailure(
-                call: Call<ResponseBody>,
-                t: Throwable
-            ) {
+         val api = retrofit.create(ApiService::class.java)
 
 
-            }
-        })*/
+         api.sendCoin(request).enqueue(object : Callback<ResponseBody> {
+
+             override fun onResponse(
+                 call: Call<ResponseBody>,
+                 response: Response<ResponseBody>
+             ) {
+             }
+
+             override fun onFailure(
+                 call: Call<ResponseBody>,
+                 t: Throwable
+             ) {
+
+
+             }
+         })*/
     }
 }
